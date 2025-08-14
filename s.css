@@ -1,0 +1,53 @@
+.p {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: red;
+  transform: scale(var(--s));
+  animation: float var(--dur) ease-out forwards;
+  clip-path: path('M10 30 A10 10 0 0 1 0 10 A10 10 0 0 1 20 10 Q20 30 10 30 Z');
+}
+
+@keyframes float {
+  0% {
+    opacity: 1;
+    transform: scale(var(--s)) translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(var(--s)) translate(var(--dx), var(--dy));
+  }
+}
+.heart-wrapper {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  animation: floatHeart var(--dur) ease-out forwards;
+  transform: scale(var(--s));
+  pointer-events: none;
+}
+
+@keyframes floatHeart {
+  0% {
+    opacity: 1;
+    transform: scale(var(--s)) translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(var(--s)) translate(var(--dx), var(--dy));
+  }
+}
+
+.heart-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.heart-left,
+.heart-right {
+  fill: red;
+}
+
+.heart-gloss {
+  fill: rgba(255, 255, 255, 0.6);
+}

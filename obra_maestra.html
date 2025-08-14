@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Página Romántica Interactiva</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background-color: #FFC0CB;
+    font-family: Arial, sans-serif;
+    height: 300vh;
+  }
+
+  .corazon {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    transform: rotate(-45deg);
+    animation: caer linear forwards;
+    cursor: pointer;
+  }
+
+  .corazon::before, .corazon::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    border-radius: 50%;
+  }
+  .corazon::before {
+    top: -10px;
+    left: 0;
+  }
+  .corazon::after {
+    left: 10px;
+    top: 0;
+  }
+
+  @keyframes caer {
+    to {
+      transform: translateY(110vh) rotate(-45deg);
+      opacity: 0.8;
+    }
+  }
+
+  @keyframes burst {
+    to {
+      transform: scale(2) rotate(-45deg);
+      opacity: 0;
+    }
+  }
+
+  .frase {
+    position: absolute;
+    background: rgba(255,255,255,0.8);
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #800000;
+    white-space: nowrap;
+    pointer-events: none;
+    animation: fadeOut 99s forwards;
+  }
+
+  @keyframes fadeOut {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-40px); }
+  }
+
+  .poema-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.3);
+    padding: 40px;
+    border-radius: 20px;
+    z-index: 1000;
+    width: 60%;
+    text-align: center;
+  }
+
+  .poema {
+    font-family: 'Great Vibes', cursive;
+    font-size: 28px;
+    color: #800000;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="poema-container">
+    <h1>Cuando Llegaste Tú</h1>
+  <p class="poema">
+    
+    Un día,
+cuando creía que no necesitaba a nadie,
+jugaba a la felicidad
+como un actor sin público,
+escondiendo cicatrices
+tras la máscara de una risa hueca.
+
+El pasado,
+con su voz de hierro,
+me había enseñado a fingir
+que la soledad era refugio,
+aunque por dentro
+el alma mendigara un abrazo.
+
+Y entonces llegaste tú,
+con manos de luz
+y mirada que sabía leer
+las grietas invisibles en mi piel.
+Me enseñaste que el dolor
+no era una casa donde vivir,
+sino un puente para cruzar.
+
+No sabía que en tu corazón
+había tormentas aún más feroces,
+que tus labios,
+aunque dibujaban la curva perfecta de una sonrisa,
+sostenían silencios
+que ardían en la madrugada.
+
+Quise dejar atrás mis sombras
+para alumbrar las tuyas,
+y en ese intento
+descubrí que tu reflejo
+había encendido el mío.
+No sé si fue amor verdadero
+o el eco de dos almas rotas
+reconociéndose en la penumbra.
+
+Al principio,
+mi corazón temblaba como un niño
+ante un fuego nuevo;
+lo escondí,
+porque el miedo susurraba
+que un error podía alejarte.
+
+Hoy, que he domado
+la marea de mis emociones,
+te digo,
+como quien escribe la última frase
+y empieza un capítulo eterno:
+no apresuremos el reloj
+si queremos que dure toda la vida.
+
+Te pido,
+no seas solo una página,
+ni un capítulo en mis memorias;
+sé la tinta y el papel,
+sé la historia completa,
+la que se escribe
+con los latidos y los silencios,
+la que se firma
+con un "para siempre"
+y se lee
+hasta el último suspiro.
+
+¿Te quedarías?
+¿Me ayudarías a escribir
+el final más hermoso
+del libro de mi vida?
+  </p>
+</div>
+
+<!-- Canciones -->
+<audio id="cancion1" src="ssstik.io_1755169744289.mp3"></audio>
+<audio id="cancion2" src="ssstik.io_1755169888075.mp3"></audio>
+<audio id="cancion3" src="ssstik.io_1755169922966.mp3"></audio>
+<audio id="cancion4" src="ssstik.io_1755169991300.mp3"></audio>
+<audio id="cancion5" src="ssstik.io_1755170089656.mp3"></audio>
+<script>
+const frases = [
+  "Tu sonrisa ilumina mi universo",
+  "Cada latido me lleva a ti",
+  "Eres mi razón de cada amanecer",
+  "El amor eres tú en cada forma",
+  "Contigo, todo tiene sentido"
+];
+
+const colores = ["#000000", "#Ff0500", "#FFDAB9", "#E6E6FA", "#FFF0F5"];
+const canciones = ["cancion1", "cancion2", "cancion3", "cancion4", "cancion5"];
+
+// Guardamos todos los elementos <audio> para poder detenerlos fácilmente
+const audios = canciones.map(id => document.getElementById(id));
+
+function detenerTodasLasCanciones() {
+  audios.forEach(audio => {
+    audio.pause();
+    audio.currentTime = 0;
+  });
+}
+
+function crearCorazon() {
+  const corazon = document.createElement('div');
+  corazon.classList.add('corazon');
+  corazon.style.left = Math.random() * window.innerWidth + "px";
+  const duracion = Math.random() * 5 + 5;
+  corazon.style.animationDuration = duracion + "s";
+  corazon.style.backgroundColor = "red";
+  document.body.appendChild(corazon);
+
+  corazon.addEventListener('click', (e) => {
+    e.stopPropagation();
+    corazon.style.animation = "burst 0.5s forwards";
+
+    // Mostrar frase con z-index alto
+    const frase = document.createElement('div');
+    frase.classList.add('frase');
+    frase.style.zIndex = "9999"; // Siempre al frente
+    frase.innerText = frases[Math.floor(Math.random() * frases.length)];
+    frase.style.left = e.pageX + "px";
+    frase.style.top = e.pageY + "px";
+    document.body.appendChild(frase);
+    setTimeout(() => frase.remove(), 2000);
+
+    // Cambiar color de fondo
+    document.body.style.backgroundColor = colores[Math.floor(Math.random() * colores.length)];
+
+    // Seleccionar y reproducir canción
+    detenerTodasLasCanciones();
+    const seleccionada = document.getElementById(canciones[Math.floor(Math.random() * canciones.length)]);
+    if (seleccionada) {
+      seleccionada.play();
+    }
+
+    setTimeout(() => corazon.remove(), 500);
+  });
+
+  setTimeout(() => corazon.remove(), duracion * 1000);
+}
+
+setInterval(crearCorazon, 500);
+</script>
