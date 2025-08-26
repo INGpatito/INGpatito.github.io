@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Video con aura y texto dinámico</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    /* Fondo de video */
+    .video-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -2;
+      overflow: hidden;
+    }
+
+    .video-background video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      filter: brightness(0.7);
+      animation: slowMotion 10s linear infinite;
+    }
+
+    @keyframes slowMotion {
+      0% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.02); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    /* Cuadro central */
+    .cuadro {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(173, 216, 230, 0.3); /* azul claro translúcido */
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 20px;
+      width: 500px;
+      max-width: 90%;
+      min-height: 150px;
+      max-height: 70vh;
+      overflow-y: auto;
+      box-shadow: 0 0 30px rgba(173, 216, 230, 0.6);
+      z-index: 1;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    /* Aura giratoria */
+    .aura {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 400px;
+      height: 400px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(173,216,230,0.4) 0%, transparent 70%);
+      animation: girarAura 8s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes girarAura {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* Texto dinámico con efecto de escritura */
+    #texto {
+      font-size: 1.2rem;
+      color: white;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    /* Cursor parpadeante */
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      background: white;
+      margin-left: 2px;
+      animation: blink 0.8s infinite;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      50.1%, 100% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="video-background">
+    <video autoplay muted loop playsinline>
+      <source src="186306-877727608.mp4" type="video/mp4">
+      Tu navegador no soporta el video HTML5.
+    </video>
+  </div>
+
+  <div class="aura"></div>
+
+  <div class="cuadro">
+    <div id="texto"></div><span class="cursor"></span>
+  </div>
+
+  <script>
+    const textoElemento = document.getElementById("texto");
+    const cursor = document.querySelector(".cursor");
+
+    const poema = `Te encontré una tarde sin buscar,
+con una rosa en la mano y la risa de sal,
+como quien llega sin avisar 
+y de pronto lo vuelve todo inmortal.
+
+Desayunamos pan y promesas,
+en la cocina bailaban las tazas,
+yo te miraba, y en tus pupilas
+florecían rosas entre palabras escasas.
+
+Una tarde gris, con el alma en desorden,
+te escribí un poema con pan y con hambre.
+Entre sorbos de Maruchan tibia y calma,
+dibujaste rosas con sal en mi palma.
+
+Tu nombre aún huele a jardín y a hogar,
+a pan recién hecho y caricia al azar,
+y aunque la vida nos ponga más sal que dulzor,
+prefiero contigo, cualquier sabor.`;
+
+    let i = 0;
+
+    function escribir() {
+      if (i < poema.length) {
+        textoElemento.textContent += poema.charAt(i);
+        i++;
+        setTimeout(escribir, 50); // velocidad de escritura
+      } else {
+        cursor.style.display = "none"; // quitar cursor al terminar
+      }
+    }
+
+    window.onload = escribir;
+  </script>
+
+</body>
+</html>

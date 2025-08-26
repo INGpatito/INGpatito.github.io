@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Página Oscura y Triste</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: radial-gradient(circle at center, #111 40%, #000 100%);
+    font-family: Arial, sans-serif;
+    height: 300vh;
+    color: #ccc;
+  }
+
+  /* CORAZONES ROTOS */
+  .corazon {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: #440000;
+    transform: rotate(-45deg);
+    animation: caer linear forwards, temblor 0.3s infinite;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(255,0,0,0.6);
+  }
+
+  .corazon::before, .corazon::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: #440000;
+    border-radius: 50%;
+  }
+  .corazon::before {
+    top: -10px;
+    left: 0;
+  }
+  .corazon::after {
+    left: 10px;
+    top: 0;
+  }
+
+  /* Fractura del corazón */
+  .corazon::after {
+    position: absolute;
+    background: linear-gradient(to bottom right, transparent 45%, #222 50%, transparent 55%);
+    border-radius: 50%;
+    mix-blend-mode: screen;
+  }
+
+  @keyframes caer {
+    to {
+      transform: translateY(110vh) rotate(-45deg);
+      opacity: 0.6;
+    }
+  }
+
+  @keyframes temblor {
+    0% { transform: rotate(-45deg) translateX(0); }
+    25% { transform: rotate(-45deg) translateX(-1px); }
+    50% { transform: rotate(-45deg) translateX(1px); }
+    75% { transform: rotate(-45deg) translateX(-1px); }
+    100% { transform: rotate(-45deg) translateX(0); }
+  }
+
+  @keyframes burst {
+    to {
+      transform: scale(2) rotate(-45deg);
+      opacity: 0;
+    }
+  }
+
+  .frase {
+    position: absolute;
+    background: rgba(30, 0, 0, 0.8);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #ff4d4d;
+    white-space: nowrap;
+    pointer-events: none;
+    animation: fadeOut 3s forwards;
+    box-shadow: 0 0 8px rgba(255,0,0,0.5);
+  }
+
+  @keyframes fadeOut {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-40px); }
+  }
+
+  .poema-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    backdrop-filter: blur(15px);
+    background-color: rgba(20, 0, 0, 0.6);
+    padding: 40px;
+    border-radius: 20px;
+    z-index: 1000;
+    width: 60%;
+    max-height: 70vh;
+    overflow-y: auto;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(255, 0, 0, 0.4);
+  }
+
+  .poema {
+    font-family: 'Great Vibes', cursive;
+    font-size: 28px;
+    color: #bbb;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    text-align: center;
+  }
+
+  h1 {
+    color: #ff4d4d;
+    text-shadow: 0 0 8px rgba(255,0,0,0.6);
+  }
+
+  /* Cursor parpadeante */
+  .cursor {
+    display: inline-block;
+    width: 8px;
+    background: #ff4d4d;
+    margin-left: 2px;
+    animation: blink 0.8s infinite;
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    50.1%, 100% { opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="poema-container">
+    <h1>Mi mayor miedo hecho realidad</h1>
+    <div id="poema" class="poema"></div><span class="cursor"></span>
+</div>
+
+<!-- Canciones -->
+<audio id="cancion1" src="ssstik.io_1755169744289.mp3"></audio>
+<audio id="cancion2" src="ssstik.io_1755169888075.mp3"></audio>
+<audio id="cancion3" src="ssstik.io_1755169922966.mp3"></audio>
+<audio id="cancion4" src="ssstik.io_1755169991300.mp3"></audio>
+<audio id="cancion5" src="ssstik.io_1755170089656.mp3"></audio>
+
+<!-- Sonido máquina de escribir -->
+<audio id="type-sound" src="https://www.soundjay.com/mechanical/typewriter-key-1.mp3" preload="auto"></audio>
+
+<script>
+const frases = [
+  "El eco de un amor roto...",
+  "Mi corazón sangra en silencio",
+  "Las lágrimas reemplazan las sonrisas",
+  "asi como los sueños se hacen realidad las pesadillas tambien",
+  "Cuando las heridas sanan las curitas se desechan"
+];
+
+const colores = ["#000000", "#111111", "#220000", "#330000", "#1a1a1a"];
+const canciones = ["cancion1", "cancion2", "cancion3", "cancion4", "cancion5"];
+
+const audios = canciones.map(id => document.getElementById(id));
+
+function detenerTodasLasCanciones() {
+  audios.forEach(audio => {
+    audio.pause();
+    audio.currentTime = 0;
+  });
+}
+
+function crearCorazon() {
+  const corazon = document.createElement('div');
+  corazon.classList.add('corazon');
+  corazon.style.left = Math.random() * window.innerWidth + "px";
+  const duracion = Math.random() * 5 + 5;
+  corazon.style.animationDuration = duracion + "s";
+  document.body.appendChild(corazon);
+
+  corazon.addEventListener('click', (e) => {
+    e.stopPropagation();
+    corazon.style.animation = "burst 0.5s forwards";
+
+    const frase = document.createElement('div');
+    frase.classList.add('frase');
+    frase.innerText = frases[Math.floor(Math.random() * frases.length)];
+    frase.style.left = e.pageX + "px";
+    frase.style.top = e.pageY + "px";
+    document.body.appendChild(frase);
+    setTimeout(() => frase.remove(), 2000);
+
+    document.body.style.backgroundColor = colores[Math.floor(Math.random() * colores.length)];
+
+    detenerTodasLasCanciones();
+    const seleccionada = document.getElementById(canciones[Math.floor(Math.random() * canciones.length)]);
+    if (seleccionada) {
+      seleccionada.play();
+    }
+
+    setTimeout(() => corazon.remove(), 500);
+  });
+
+  setTimeout(() => corazon.remove(), duracion * 1000);
+}
+
+setInterval(crearCorazon, 700);
+
+/* EFECTO DE ESCRITURA AUTOMÁTICA */
+const poemaTexto = `Con amor he iniciado mi obra,
+y con amor he de terminarla.
+Fue hermoso mientras duró,
+pero supongo que nada es para siempre...
+excepto el amor que siento por ti.
+
+Aunque no sientas lo mismo,
+yo habría dado mi vida por ti.
+Y aunque estés a punto de cambiarme,
+te seguiré amando en silencio,
+con emociones reprimidas,
+tratando de no llorar
+al saber que no estoy en su lugar.
+
+Tal vez cometí un error,
+tal vez hubo algo en mí
+que te llevó a elegirlo a él antes que a mí.
+Fuiste mi primer amor,
+la primera persona
+que encendió este fuego en mi alma.
+
+Lamento si no fui tan afectivo,
+si no te mostré lo mucho que te quería.
+Pero dentro de mí,
+cada día gritaba y deseaba
+que pudieras verlo.
+
+Si pudieras entrar al museo de mi corazón
+te darías cuenta que todos los retratos hablan de ti.
+
+Sé que este no es un adiós,
+ni un hasta pronto.
+Pero si algún día
+me das la oportunidad de amarte,
+quiero que sepas
+que siempre tendrás un lugar,
+el más especial de todos,
+aquí… en mi corazón roto.`;
+
+const poemaElemento = document.getElementById("poema");
+const cursor = document.querySelector(".cursor");
+const typeSound = document.getElementById("type-sound");
+
+let i = 0;
+
+function escribir() {
+  if (i < poemaTexto.length) {
+    poemaElemento.textContent += poemaTexto.charAt(i);
+    if (poemaTexto.charAt(i) !== " " && poemaTexto.charAt(i) !== "\n") {
+      typeSound.currentTime = 0;
+      typeSound.play();
+    }
+    i++;
+    setTimeout(escribir, 50);
+  } else {
+    cursor.style.display = "none";
+  }
+}
+
+window.onload = escribir;
+</script>
+</body>
+</html>

@@ -73,17 +73,20 @@
   }
 
   .poema-container {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    backdrop-filter: blur(10px);
-    background-color: rgba(255, 255, 255, 0.3);
-    padding: 40px;
-    border-radius: 20px;
-    z-index: 1000;
-    width: 60%;
-    text-align: center;
+ position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.3);
+  padding: 40px;
+  border-radius: 20px;
+  z-index: 1000;
+  width: 60%;
+  max-height: 70vh;   /* 🔹 límite de altura */
+  overflow-y: auto;   /* 🔹 scroll vertical si se desborda */
+  text-align: center;
+  box-shadow: 0 0 30px rgba(255, 3, 3, 0.6);
   }
 
   .poema {
@@ -91,6 +94,22 @@
     font-size: 28px;
     color: #800000;
     line-height: 1.6;
+    white-space: pre-wrap;
+    text-align: center;
+  }
+
+  /* Cursor parpadeante */
+  .cursor {
+    display: inline-block;
+    width: 8px;
+    background: #800000;
+    margin-left: 2px;
+    animation: blink 0.8s infinite;
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    50.1%, 100% { opacity: 0; }
   }
 </style>
 </head>
@@ -98,9 +117,84 @@
 
 <div class="poema-container">
     <h1>Cuando Llegaste Tú</h1>
-  <p class="poema">
-    
-    Un día,
+    <div id="poema" class="poema"></div><span class="cursor"></span>
+</div>
+
+<!-- Canciones -->
+<audio id="cancion1" src="ssstik.io_1755169744289.mp3"></audio>
+<audio id="cancion2" src="ssstik.io_1755169888075.mp3"></audio>
+<audio id="cancion3" src="ssstik.io_1755169922966.mp3"></audio>
+<audio id="cancion4" src="ssstik.io_1755169991300.mp3"></audio>
+<audio id="cancion5" src="ssstik.io_1755170089656.mp3"></audio>
+
+<!-- Sonido máquina de escribir -->
+<audio id="type-sound" src="https://www.soundjay.com/mechanical/typewriter-key-1.mp3" preload="auto"></audio>
+
+<script>
+const frases = [
+  "Tu sonrisa ilumina mi universo",
+  "Cada latido me lleva a ti",
+  "Eres mi razón de cada amanecer",
+  "El amor eres tú en cada forma",
+  "Contigo, todo tiene sentido"
+];
+
+const colores = ["#000000", "#Ff0500", "#FFDAB9", "#E6E6FA", "#FFF0F5"];
+const canciones = ["cancion1", "cancion2", "cancion3", "cancion4", "cancion5"];
+
+// Guardamos todos los elementos <audio> para poder detenerlos fácilmente
+const audios = canciones.map(id => document.getElementById(id));
+
+function detenerTodasLasCanciones() {
+  audios.forEach(audio => {
+    audio.pause();
+    audio.currentTime = 0;
+  });
+}
+
+function crearCorazon() {
+  const corazon = document.createElement('div');
+  corazon.classList.add('corazon');
+  corazon.style.left = Math.random() * window.innerWidth + "px";
+  const duracion = Math.random() * 5 + 5;
+  corazon.style.animationDuration = duracion + "s";
+  corazon.style.backgroundColor = "red";
+  document.body.appendChild(corazon);
+
+  corazon.addEventListener('click', (e) => {
+    e.stopPropagation();
+    corazon.style.animation = "burst 0.5s forwards";
+
+    // Mostrar frase con z-index alto
+    const frase = document.createElement('div');
+    frase.classList.add('frase');
+    frase.style.zIndex = "9999"; // Siempre al frente
+    frase.innerText = frases[Math.floor(Math.random() * frases.length)];
+    frase.style.left = e.pageX + "px";
+    frase.style.top = e.pageY + "px";
+    document.body.appendChild(frase);
+    setTimeout(() => frase.remove(), 2000);
+
+    // Cambiar color de fondo
+    document.body.style.backgroundColor = colores[Math.floor(Math.random() * colores.length)];
+
+    // Seleccionar y reproducir canción
+    detenerTodasLasCanciones();
+    const seleccionada = document.getElementById(canciones[Math.floor(Math.random() * canciones.length)]);
+    if (seleccionada) {
+      seleccionada.play();
+    }
+
+    setTimeout(() => corazon.remove(), 500);
+  });
+
+  setTimeout(() => corazon.remove(), duracion * 1000);
+}
+
+setInterval(crearCorazon, 500);
+
+/* --- EFECTO DE ESCRITURA AUTOMÁTICA --- */
+const poemaTexto = `Un día,
 cuando creía que no necesitaba a nadie,
 jugaba a la felicidad
 como un actor sin público,
@@ -168,76 +262,29 @@ hasta el último suspiro.
 ¿Te quedarías?
 ¿Me ayudarías a escribir
 el final más hermoso
-del libro de mi vida?
-  </p>
-</div>
+del libro de mi vida?`;
 
-<!-- Canciones -->
-<audio id="cancion1" src="ssstik.io_1755169744289.mp3"></audio>
-<audio id="cancion2" src="ssstik.io_1755169888075.mp3"></audio>
-<audio id="cancion3" src="ssstik.io_1755169922966.mp3"></audio>
-<audio id="cancion4" src="ssstik.io_1755169991300.mp3"></audio>
-<audio id="cancion5" src="ssstik.io_1755170089656.mp3"></audio>
-<script>
-const frases = [
-  "Tu sonrisa ilumina mi universo",
-  "Cada latido me lleva a ti",
-  "Eres mi razón de cada amanecer",
-  "El amor eres tú en cada forma",
-  "Contigo, todo tiene sentido"
-];
+const poemaElemento = document.getElementById("poema");
+const cursor = document.querySelector(".cursor");
+const typeSound = document.getElementById("type-sound");
 
-const colores = ["#000000", "#Ff0500", "#FFDAB9", "#E6E6FA", "#FFF0F5"];
-const canciones = ["cancion1", "cancion2", "cancion3", "cancion4", "cancion5"];
+let i = 0;
 
-// Guardamos todos los elementos <audio> para poder detenerlos fácilmente
-const audios = canciones.map(id => document.getElementById(id));
-
-function detenerTodasLasCanciones() {
-  audios.forEach(audio => {
-    audio.pause();
-    audio.currentTime = 0;
-  });
-}
-
-function crearCorazon() {
-  const corazon = document.createElement('div');
-  corazon.classList.add('corazon');
-  corazon.style.left = Math.random() * window.innerWidth + "px";
-  const duracion = Math.random() * 5 + 5;
-  corazon.style.animationDuration = duracion + "s";
-  corazon.style.backgroundColor = "red";
-  document.body.appendChild(corazon);
-
-  corazon.addEventListener('click', (e) => {
-    e.stopPropagation();
-    corazon.style.animation = "burst 0.5s forwards";
-
-    // Mostrar frase con z-index alto
-    const frase = document.createElement('div');
-    frase.classList.add('frase');
-    frase.style.zIndex = "9999"; // Siempre al frente
-    frase.innerText = frases[Math.floor(Math.random() * frases.length)];
-    frase.style.left = e.pageX + "px";
-    frase.style.top = e.pageY + "px";
-    document.body.appendChild(frase);
-    setTimeout(() => frase.remove(), 2000);
-
-    // Cambiar color de fondo
-    document.body.style.backgroundColor = colores[Math.floor(Math.random() * colores.length)];
-
-    // Seleccionar y reproducir canción
-    detenerTodasLasCanciones();
-    const seleccionada = document.getElementById(canciones[Math.floor(Math.random() * canciones.length)]);
-    if (seleccionada) {
-      seleccionada.play();
+function escribir() {
+  if (i < poemaTexto.length) {
+    poemaElemento.textContent += poemaTexto.charAt(i);
+    if (poemaTexto.charAt(i) !== " " && poemaTexto.charAt(i) !== "\n") {
+      typeSound.currentTime = 0;
+      typeSound.play();
     }
-
-    setTimeout(() => corazon.remove(), 500);
-  });
-
-  setTimeout(() => corazon.remove(), duracion * 1000);
+    i++;
+    setTimeout(escribir, 50); // Velocidad escritura
+  } else {
+    cursor.style.display = "none"; // Oculta el cursor al terminar
+  }
 }
 
-setInterval(crearCorazon, 500);
+window.onload = escribir;
 </script>
+</body>
+</html>

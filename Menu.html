@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Menú radial interactivo — Fix completo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- VIDEO STACK (4 videos apilados para cambio instantáneo) -->
+  <div id="video-stack" aria-hidden="true">
+    <video class="bg" id="video-0" src="186306-877727608.mp4" preload="auto" muted loop playsinline></video>
+    <video class="bg" id="video-1" src="videos/video2.mp4" preload="auto" muted loop playsinline></video>
+    <video class="bg" id="video-2" src="videos/video3.mp4" preload="auto" muted loop playsinline></video>
+    <video class="bg" id="video-3" src="videos/video4.mp4" preload="auto" muted loop playsinline></video>
+  </div>
+
+  <!-- Menú en esquina superior izquierda -->
+  <div id="menu-wrapper" aria-hidden="false" title="No preciones el (...) solo lo puse para mas suspenso ya sabes como soy :v">
+    <div id="menu" aria-label="Menú radial interactivo" role="navigation">
+      <div class="ring" id="ring" aria-hidden="true"></div>
+
+      <!-- sectores interactivos (botones) -->
+      <div class="sectors" aria-hidden="false">
+        <button class="sector" data-index="0" data-video="0" data-link="dark.html" aria-label="..."></button>
+        <button class="sector" data-index="1" data-video="1" data-link="heart.html" aria-label="otros"></button>
+        <button class="sector" data-index="2" data-video="2" data-link="obra_maestra.html" aria-label="La obra maestra"></button>
+        <button class="sector" data-index="3" data-video="3" data-link="PANyROSAS.html" aria-label="Entre pan y rosas"></button>
+      </div>
+
+      <!-- etiquetas visibles -->
+      <div class="labels" aria-hidden="true">
+        <div class="label" data-index="0">...</div>
+        <div class="label" data-index="1">otros</div>
+        <div class="label" data-index="2">La obra maestra</div>
+        <div class="label" data-index="3">Entre pan y rosas</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

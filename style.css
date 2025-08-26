@@ -1,0 +1,78 @@
+/* RESET */
+*{box-sizing:border-box}html,body{height:100%;margin:0;background:#070708;overflow:hidden;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;}
+
+/* VIDEO STACK */
+#video-stack{position:fixed;inset:0;z-index:-5}
+#video-stack video.bg{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;pointer-events:none;
+  transition:opacity 0.12s linear;will-change:opacity;
+}
+#video-stack video.bg.visible{opacity:1}
+
+/* WRAPPER en esquina izq */
+#menu-wrapper{
+  position:fixed; left:12px; top:12px; z-index:40; width:520px; height:520px; pointer-events:none; user-select:none;
+}
+
+/* MENU (rotable) */
+#menu{width:100%;height:100%;position:relative;transform-origin:50% 50%;transition:transform 0.55s cubic-bezier(.2,.9,.2,1); pointer-events:auto;}
+
+/* RING visual */
+.ring{
+  position:absolute;inset:0;border-radius:50%;
+  background: conic-gradient(
+    rgba(255, 0, 0, 0.401) 0deg 90deg,
+    rgba(255, 255, 255, 0.63) 90deg 180deg,
+    rgba(0, 68, 255, 0.53) 180deg 270deg,
+    rgba(0, 0, 0, 0.523) 270deg 360deg
+  );
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6), inset 0 0 40px rgba(255,255,255,0.03);
+  -webkit-mask: radial-gradient(circle at 50% 50%, transparent 36%, black 37%);
+  mask: radial-gradient(circle at 50% 50%, transparent 36%, black 37%);
+  z-index:1; pointer-events:none;
+}
+
+/* aura deslumbrante (debe recibir --active-angle en inline style) */
+.ring::after{
+  content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  background: conic-gradient(from 0deg, rgba(255,255,255,0.12) 0deg 90deg, rgba(0,0,0,0) 90deg 360deg);
+  -webkit-mask: radial-gradient(circle at 50% 50%, transparent 36%, black 37%);
+  mask: radial-gradient(circle at 50% 50%, transparent 36%, black 37%);
+  filter: blur(20px) saturate(140%); opacity:0; transition:opacity .22s ease, transform .6s cubic-bezier(.2,.9,.2,1);
+  transform-origin:center center;
+}
+.ring.active::after{ opacity:1; transform: rotate(var(--active-angle,0deg)); }
+
+/* SECTORS (botones invisibles pero capturan eventos) */
+.sectors{position:absolute;inset:0;border-radius:50%;z-index:6;pointer-events:auto}
+.sector{
+  position:absolute;inset:0;border:0;background:transparent;padding:0;margin:0;cursor:pointer;outline:none;
+  clip-path: polygon(50% 50%, 100% 50%, 100% 0, 50% 0); /* wedge */
+  -webkit-mask: radial-gradient(circle at 50% 50%, transparent 36%, black 37%);
+  mask: radial-gradient(circle at 50% 50%, transparent 36%, black 37%);
+  transform-origin:50% 50%;
+  transition:transform .18s ease;
+  display:block;
+}
+/* rotar cada wedge a su posición */
+.sector[data-index="0"]{transform:rotate(0deg)}
+.sector[data-index="1"]{transform:rotate(90deg)}
+.sector[data-index="2"]{transform:rotate(180deg)}
+.sector[data-index="3"]{transform:rotate(270deg)}
+.sector:hover{transform:scale(1.03) rotate(var(--sector-rot,0deg))}
+
+/* LABELS (visibles y legibles) */
+.labels{position:absolute;inset:0;z-index:8;pointer-events:none}
+.label{
+  position:absolute;left:50%;top:50%;transform-origin:0 0;
+  font-weight:700;color:#f6f7f8;background:rgba(0,0,0,0.28);
+  padding:8px 12px;border-radius:9px;backdrop-filter: blur(6px) saturate(120%);
+  box-shadow: 0 10px 26px rgba(0,0,0,0.6);white-space:nowrap;font-size:16px;transition:transform .55s cubic-bezier(.2,.9,.2,1);
+}
+
+/* tamaños / responsive */
+@media (max-width:640px){
+  #menu-wrapper{width:360px;height:360px;left:8px;top:8px}
+  .label{font-size:14px;padding:6px 10px}
+  .ring::after{filter:blur(14px)}
+}

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mi obra maestra</title>
+  <!-- Tipografías románticas y UI -->
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="s.css">
+  <link rel="stylesheet" href="j.js">
+  <div id="burst"></div>
+  <style>
+    :root{
+      --bg1:#17030c; --bg2:#252528; --rose:#3f3034; --rose-dark:#34111c; 
+      --gold:#000000; --gold-dark:#2e2716; --glow:#1b0911; --white:#782222;
+      --shadow: 0 20px 50px rgba(0,0,0,.25);
+      --accent:#000000; --accent-2:#302b1f; --ink:#49115b;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; display:flex; align-items:center; justify-content:center;
+      background: radial-gradient(1200px 800px at 70% 20%, #ffffff22, transparent 70%),
+                  linear-gradient(135deg,var(--bg1),var(--bg2));
+      overflow:hidden; font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      color:#fff;
+    }
+
+    /* ===== Partículas de corazones flotando de fondo ===== */
+    .hearts-bg{position:fixed; inset:0; pointer-events:none; overflow:hidden;}
+    .hearts-bg span{
+      position:absolute; display:block; width:14px; height:14px; opacity:.65;
+      background: radial-gradient(circle at 30% 30%, #fff, #ffbed6 35%, #ff7fb3 60%, #ff4f8f 80%);
+      transform: rotate(45deg); border-radius: 2px;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,.15));
+      animation: floatUp linear infinite;
+    }
+    .hearts-bg span::before,.hearts-bg span::after{
+      content:""; position:absolute; width:14px; height:14px; border-radius:50%; background: inherit; top:0; left:0;
+    }
+    .hearts-bg span::after{left:auto; top:auto; right:0}
+    @keyframes floatUp{from{transform:translateY(102vh) rotate(45deg)} to{transform:translateY(-22vh) rotate(45deg)}}
+
+    /* ===== Contenedor principal ===== */
+    .wrap{position:relative; width:min(980px,94vw); padding:32px}
+
+    .title{position:absolute; top:18px; left:50%; transform:translateX(-50%);
+      font-family:'Great Vibes', cursive; font-size:44px; color:#000000;
+      text-shadow:0 3px 8px #0002, 0 0 20px #fff3}
+
+    .message{position:absolute; bottom:16px; left:50%; transform:translateX(-50%);
+      font-family:'Great Vibes', cursive; font-size:36px; color:#fff; opacity:0;
+      transition:opacity .5s ease, transform .6s ease; text-align:center; filter: drop-shadow(0 6px 16px #0004)}
+    .message.show{opacity:1; transform:translateX(-50%) translateY(0)}
+    .msg-error{color:#ffe2ea; text-shadow:0 4px 12px #0003}
+    .msg-success{color:#fff7cc; text-shadow:0 4px 12px #0003}
+
+    /* ===== Candado corazón ===== */
+    .lock-area{position:relative; display:grid; place-items:center}
+    .lock{position:relative; width:460px; aspect-ratio:1/1; margin:auto; filter: drop-shadow(0 30px 60px rgba(0,0,0,.35));}
+
+    /* Animaciones globales */
+    @keyframes shake{0%,100%{transform:translateX(0)} 20%{transform:translateX(-10px)} 40%{transform:translateX(10px)} 60%{transform:translateX(-8px)} 80%{transform:translateX(8px)}}
+    .shake{animation:shake .6s ease}
+
+    /* Panel (diales centrados sobre el corazón) */
+    .panel{position:absolute; inset:0; display:grid; place-items:center; pointer-events:none}
+    .panel .panel-inner{pointer-events:auto}
+
+    /* ===== Diales con flechas ===== */
+    .controls{margin-top:22px; display:flex; flex-direction:column; align-items:center; gap:16px}
+    .dials{display:flex; gap:12px; background:#ffffff22; border:1px solid #ffffff3d; padding:14px 18px; border-radius:18px; backdrop-filter: blur(8px); box-shadow: var(--shadow)}
+
+    .dial{position:relative; display:grid; place-items:center; gap:6px; width:66px; height:88px; border-radius:16px; overflow:hidden;
+      background: linear-gradient(180deg,#fff,#f6f0ff); border:1px solid #e9d9ff;
+      box-shadow: inset 0 6px 18px rgba(255,255,255,.8), inset 0 -10px 18px rgba(0,0,0,.05); perspective:800px}
+    .arrow{cursor:pointer; font-size:20px; user-select:none; color:var(--ink); line-height:1}
+    .arrow:active{transform: translateY(1px)}
+    .letter{font-size:28px; font-weight:800; color:var(--ink); transition: transform .32s ease}
+    .rotate-up{transform: rotateX(-360deg)}
+    .rotate-down{transform: rotateX(360deg)}
+
+    .dial:before{content:""; position:absolute; inset:auto 8px 8px; height:12px; border-radius:999px; background:#00000010; filter: blur(6px)}
+
+    /* ===== Botón ===== */
+    .btn{font-size:16px; font-weight:800; letter-spacing:.06em; padding:14px 26px; border-radius:999px; border:0; cursor:pointer; color:#5b3c00;
+      background: linear-gradient(180deg, var(--accent), var(--accent-2)); box-shadow: 0 12px 24px rgba(0,0,0,.2), inset 0 2px 0 #fff6; transition: transform .1s ease, box-shadow .2s ease}
+    .btn:hover{transform:translateY(-1px); box-shadow: 0 16px 30px rgba(0,0,0,.26), inset 0 2px 0 #fff8}
+    .btn:active{transform:translateY(1px)}
+
+    /* ===== SVG del candado ===== */
+    svg{width:100%; height:100%}
+    .shackle{fill:url(#metal); filter: drop-shadow(0 6px 10px rgba(0,0,0,.25))}
+    .heart-left, .heart-right{fill:url(#roseGrad); stroke:#00000010; stroke-width:1; transform-origin: 180px 200px}
+    .heart-gloss{fill:url(#gloss)}
+    .sparkle{opacity:0}
+
+    /* ===== Estados de desbloqueo (animaciones core) ===== */
+    .unlocked .shackle{animation:rise 1.6s ease forwards}
+    @keyframes rise{0%{transform:translateY(0)} 50%{transform:translateY(-36px) rotate(-6deg)} 100%{transform:translateY(-30px) rotate(-14deg)}}
+    .unlocked .heart-left{animation:splitL 1.6s cubic-bezier(.2,.9,.2,1) forwards .15s}
+    .unlocked .heart-right{animation:splitR 1.6s cubic-bezier(.2,.9,.2,1) forwards .15s}
+    @keyframes splitL{to{transform: translate(-64px, 10px) rotate(-14deg)}}
+    @keyframes splitR{to{transform: translate(64px, 10px) rotate(14deg)}}
+    .unlocked .sparkle{animation: twinkle .9s ease-out forwards .6s}
+    @keyframes twinkle{from{opacity:0; transform:scale(.7)} to{opacity:1; transform:scale(1)}}
+
+    /* Panel se desvanece al desbloquear */
+    .unlocked .panel{animation: panelOut .9s ease forwards .2s}
+    @keyframes panelOut{to{opacity:0; transform: translateY(8px) scale(.96)}}
+
+    /* ===== Emisor de corazones al desbloquear ===== */
+    .burst{position:absolute; inset:0; display:block; pointer-events:none; overflow:visible}
+    .burst .p{position:absolute; left:50%; top:52%; width:14px; height:14px; transform: translate(-50%,-50%) rotate(45deg) scale(var(--s,1)); border-radius: 2px;
+      background: radial-gradient(circle at 30% 30%, #000000, #000000 35%, #000000 60%, #17080e 80%);
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,.25));
+      animation: pop var(--dur,900ms) cubic-bezier(.14,.8,.2,1) forwards
+    }
+    .burst .p::before,.burst .p::after{content:""; position:absolute; width:14px; height:14px; border-radius:50%; background: inherit; top:0; left:0}
+    .burst .p::after{left:auto; top:auto; right:0}
+    @keyframes pop{from{opacity:1; transform: translate(-50%,-50%) rotate(45deg) scale(var(--s,1))} to{opacity:0; transform: translate(calc(-50% + var(--dx,0px)), calc(-50% + var(--dy,-160px))) rotate(45deg) scale(calc(var(--s,1) * 1.2))}}
+
+    /* ===== Tip de ayuda ===== */
+    .hint{font-size:12px; color:#fff; opacity:.9}
+
+    /* ===== Adaptativo ===== */
+    @media (max-width:560px){
+      .lock{width:86vw}
+      .dial{width:58px; height:80px}
+      .letter{font-size:26px}
+      .title{font-size:36px}
+      .message{font-size:30px}
+    }
+  </style>
+</head>
+<body>
+  <!-- Fondo de corazones -->
+  <div class="hearts-bg" aria-hidden="true" id="hearts"></div>
+
+  <div class="wrap">
+    <div class="title">Solo no lo abras :c </div>
+
+    <div class="lock-area">
+      <!-- Candado en forma de corazón (SVG) -->
+      <div class="lock" id="lock" aria-live="polite">
+        <svg viewBox="0 0 360 360" aria-labelledby="titulo desc" role="img">
+          <title id="titulo">Perdon sabes que soy muy emocional y creo que eso hace que sea drmatico</title>
+          <desc id="desc">Un candado con forma de corazón y arco metálico que aguarda mis sentimientos mas profundos</desc>
+          <defs>
+            <linearGradient id="roseGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#000000"/>
+              <stop offset="55%" stop-color="#1f1f1f"/>
+              <stop offset="100%" stop-color="#1f1f1f"/>
+            </linearGradient>
+            <linearGradient id="metal" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#000000"/>
+              <stop offset="35%" stop-color="#000000"/>
+              <stop offset="65%" stop-color="#000000"/>
+              <stop offset="100%" stop-color="#000000"/>
+            </linearGradient>
+            <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#000000"/>
+              <stop offset="40%" stop-color="#000000"/>
+              <stop offset="100%" stop-color="#000000"/>
+            </linearGradient>
+            <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="6" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <!-- Arco metálico -->
+          <g class="shackle" filter="url(#softGlow)">
+            <path d="M120 110 q0 -60 60 -60 q60 0 60 60 v46 h-26 v-44 q0 -36 -34 -36 q-34 0 -34 36 v44 h-26 v-46z"/>
+          </g>
+
+          <!-- Mitades del corazón -->
+          function emitBurst() {
+  const COUNT = 40;
+  for (let i = 0; i < COUNT; i++) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'heart-wrapper';
+
+    const angle = Math.random() * Math.PI - Math.PI / 2;
+    const speed = 120 + Math.random() * 140;
+    const dx = Math.cos(angle) * speed;
+    const dy = Math.sin(angle) * speed - (100 + Math.random() * 60);
+    const scale = 0.8 + Math.random() * 0.6;
+    const duration = 800 + Math.random() * 600;
+
+    wrapper.style.setProperty('--dx', `${dx}px`);
+    wrapper.style.setProperty('--dy', `${dy}px`);
+    wrapper.style.setProperty('--s', scale);
+    wrapper.style.setProperty('--dur', `${duration}ms`);
+
+    wrapper.innerHTML = `
+      <svg viewBox="0 0 360 360" class="heart-svg">
+        <g>
+          <path class="heart-left" d="M180 300 C 130 270, 70 230, 70 170 C 70 130, 100 100, 140 100 C 160 100, 175 110, 180 120 L 180 300 Z"/>
+          <path class="heart-right" d="M180 300 C 230 270, 290 230, 290 170 C 290 130, 260 100, 220 100 C 200 100, 185 110, 180 120 L 180 300 Z"/>
+          <path class="heart-gloss" d="M110 150 q40 -36 80 -18 q-36 6 -62 34 q-10 10 -18 24 q-8 -18 0 -40z"/>
+        </g>
+      </svg>
+    `;
+
+    burst.appendChild(wrapper);
+    setTimeout(() => wrapper.remove(), duration + 300);
+  }
+}
+
+          <!-- Destellos -->
+          <g class="sparkle">
+            <circle cx="110" cy="90" r="4" fill="#fff"/>
+            <circle cx="245" cy="85" r="3" fill="#fff"/>
+            <circle cx="300" cy="160" r="2.5" fill="#fff"/>
+          </g>
+        </svg>
+
+        <!-- Emisor de corazones al desbloquear -->
+        <div class="burst" id="burst"></div>
+
+        <!-- Panel central con los diales -->
+        <div class="panel">
+          <div class="panel-inner">
+            <div class="dials" aria-label="Selector de contraseña" role="group" aria-roledescription="diales con flechas">
+              <!-- Se crean por JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn" id="unlockBtn" aria-label="No lo hagas">💔 Desbloquear</button>
+        <div class="hint">Esto si es raro sabes nunca pense llegar hasta este punto</div>
+        <div class="message" id="msg" role="status" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+<div id="broken-hearts"></div>
+
+<style>
+  #broken-hearts {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+  }
+
+  #broken-hearts span {
+    position: absolute;
+    background: red;
+    transform: rotate(-45deg);
+    animation: fall linear forwards, shake 0.3s infinite;
+  }
+
+  /* lóbulos del corazón */
+  #broken-hearts span::before,
+  #broken-hearts span::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: red;
+    border-radius: 50%;
+  }
+
+  #broken-hearts span::before {
+    top: -50%;
+    left: 0;
+  }
+
+  #broken-hearts span::after {
+    left: 50%;
+    top: 0;
+  }
+
+  /* grieta del corazón roto */
+  #broken-hearts span::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 150%;
+    background: white;
+    left: 50%;
+    top: -25%;
+    transform: rotate(20deg);
+    z-index: 2;
+  }
+
+  /* animación de caída */
+  @keyframes fall {
+    to {
+      transform: translateY(120vh) rotate(-45deg);
+      opacity: 0;
+    }
+  }
+
+  /* animación de temblor */
+  @keyframes shake {
+    0%, 100% { transform: rotate(-45deg) translateX(0); }
+    50% { transform: rotate(-45deg) translateX(-2px); }
+  }
+</style>
+
+<script>
+(function hearts(){
+  const wrap = document.getElementById('broken-hearts');
+  const N = 30;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  for(let i=0; i<N; i++){
+    const s = document.createElement('span');
+    const x = Math.random() * vw;
+    const d = 14 + Math.random() * 26;
+    const delay = Math.random() * 6;
+    const dur = 10 + Math.random() * 14;
+
+    // posición inicial arriba de la pantalla
+    s.style.left = x + 'px';
+    s.style.top = (-20 - Math.random() * vh * 0.3) + 'px';
+    s.style.width = d + 'px';
+    s.style.height = d + 'px';
+
+    // duración y retraso de animaciones
+    s.style.animationDuration = dur + 's, 0.3s';
+    s.style.animationDelay = delay + 's, 0s';
+
+    s.style.opacity = (0.55 + Math.random() * 0.45).toFixed(2);
+
+    wrap.appendChild(s);
+  }
+})();
+</script>
+
+  <script>
+   
+////////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+
+    // ===== Diales con flechas (TEAMO) =====
+    const letters = Array.from({length:26}, (_,i)=>String.fromCharCode(65+i));
+    const TARGET = ['M','I','E','D','O'];
+    const dialsWrap = document.querySelector('.dials');
+    const currentIdx = [0,0,0,0,0];
+
+    function createDial(i){
+      const dial = document.createElement('div'); dial.className='dial'; dial.setAttribute('role','group'); dial.setAttribute('aria-label',`Dial ${i+1}`);
+      const up = document.createElement('div'); up.className='arrow'; up.textContent='▲'; up.setAttribute('role','button'); up.setAttribute('aria-label',`Subir letra del dial ${i+1}`);
+      const letter = document.createElement('div'); letter.className='letter'; letter.textContent='A'; letter.setAttribute('aria-live','polite'); letter.setAttribute('aria-label',`Letra actual del dial ${i+1}`);
+      const down = document.createElement('div'); down.className='arrow'; down.textContent='▼'; down.setAttribute('role','button'); down.setAttribute('aria-label',`Bajar letra del dial ${i+1}`);
+
+      function animate(dir){
+        letter.classList.add(dir==='up'?'rotate-up':'rotate-down');
+        setTimeout(()=>{ letter.textContent = letters[currentIdx[i]]; letter.classList.remove('rotate-up','rotate-down'); }, 320);
+        playTick();
+      }
+      up.addEventListener('click',()=>{ currentIdx[i]=(currentIdx[i]+1)%26; animate('up');});
+      down.addEventListener('click',()=>{ currentIdx[i]=(currentIdx[i]-1+26)%26; animate('down');});
+
+      // Accesibilidad: flechas del teclado y rueda del mouse sobre cada dial
+      dial.tabIndex=0;
+      dial.addEventListener('keydown', (e)=>{
+        if(e.key==='ArrowUp'){ e.preventDefault(); currentIdx[i]=(currentIdx[i]+1)%26; animate('up'); }
+        if(e.key==='ArrowDown'){ e.preventDefault(); currentIdx[i]=(currentIdx[i]-1+26)%26; animate('down'); }
+        if(e.key==='Enter'){ document.getElementById('unlockBtn').click(); }
+      });
+      dial.addEventListener('wheel',(e)=>{ e.preventDefault(); if(e.deltaY<0){ currentIdx[i]=(currentIdx[i]+1)%26; animate('up'); } else { currentIdx[i]=(currentIdx[i]-1+26)%26; animate('down'); } }, {passive:false});
+
+      dial.append(up, letter, down);
+      return dial;
+    }
+
+    for(let i=0;i<TARGET.length;i++) dialsWrap.appendChild(createDial(i));
+
+    // ===== Mensajes y acciones =====
+    const lock = document.getElementById('lock');
+    const btn = document.getElementById('unlockBtn');
+    const msg = document.getElementById('msg');
+    const burst = document.getElementById('burst');
+
+    function attemptCode(){ return currentIdx.map(i=>letters[i]).join(''); }
+
+    function showMessage(text, ok=false){
+      msg.textContent = text; msg.className = 'message show ' + (ok ? 'msg-success' : 'msg-error');
+    }
+
+    function shake(){ lock.classList.remove('shake'); void lock.offsetWidth; lock.classList.add('shake'); }
+      ///////////////////////////////////////////////////////////////////////////////
+    function emitBurst() {
+  const COUNT = 40;
+  for (let i = 0; i < COUNT; i++) {
+    const p = document.createElement('i');
+    p.className = 'p';
+
+    const angle = Math.random() * Math.PI - Math.PI / 2; // hacia arriba +/- 90°
+    const speed = 120 + Math.random() * 140;
+    const dx = Math.cos(angle) * speed;
+    const dy = Math.sin(angle) * speed - (100 + Math.random() * 60); // más vertical
+
+    const scale = 0.8 + Math.random() * 0.6; // escala más controlada
+    const duration = 800 + Math.random() * 600;
+//UnU
+    p.style.setProperty('--dx', `${dx}px`);
+    p.style.setProperty('--dy', `${dy}px`);
+    p.style.setProperty('--s', scale);
+    p.style.setProperty('--dur', `${duration}ms`);
+
+    burst.appendChild(p);
+    setTimeout(() => p.remove(), duration + 300);
+    
+  }
+  
+}
+
+ ///////////////////////////////////////////////////////////////////////////////
+    function unlockSequence(){
+      lock.classList.add('unlocked');
+      showMessage('Mi mayor miedo se a cumplido 💔', true);
+      emitBurst();
+      playChime();
+      // Redirección después de ~3s
+      setTimeout(()=>{ window.location.href = 'miedo.html'; }, 4000);
+    }
+
+    btn.addEventListener('click', ()=>{
+      const code = attemptCode();
+      if(code === TARGET.join('')){ unlockSequence(); }
+      else { shake(); showMessage('Lo siento pero tenia la necesidad de hacerlo ', false); playBuzz(); }
+    });
+
+    // ===== Sonidos suaves (WebAudio) =====
+    let audioCtx;
+    function getCtx(){ if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
+    function beep(freq=880, len=0.06, type='sine', vol=0.02){
+      const ctx=getCtx(); const o=ctx.createOscillator(); const g=ctx.createGain();
+      o.type=type; o.frequency.value=freq; g.gain.value=vol; o.connect(g); g.connect(ctx.destination);
+      o.start(); o.stop(ctx.currentTime+len);
+    }
+    function playTick(){ beep(900, 0.04, 'triangle', 0.02); }
+    function playBuzz(){ // error corto
+      const ctx=getCtx(); const o=ctx.createOscillator(); const g=ctx.createGain();
+      o.type='square'; o.frequency.setValueAtTime(160, ctx.currentTime);
+      g.gain.setValueAtTime(0.04, ctx.currentTime);
+      o.connect(g); g.connect(ctx.destination);
+      o.start(); o.stop(ctx.currentTime+0.12);
+    }
+    function playChime(){ // acorde rápido
+      [784, 988, 1318].forEach((f,i)=> setTimeout(()=>beep(f, 0.18, 'sine', 0.03), i*70));
+    }
+  </script>
+</body>
+</html>
